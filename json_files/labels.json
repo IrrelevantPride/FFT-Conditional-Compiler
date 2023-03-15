@@ -1,5 +1,18 @@
 {
-    "Ramza" : "x01",
-    "Gafgarion" : "x17",
-    "Agrias" : "x34"
-} 
+    "boolean" : {
+        "false" : 0,
+        "true" : 1
+    },
+    "Variables" : {
+        "Gil" : "0x02c",
+        "Injuried" : "0x061",
+        "Casualties" : "0x062",
+        "StoryProgression" : "0x06E",
+        "ShopAvailability" : "0x06F"
+    },
+    "Units" : {
+        "Ramza" : "x01",
+        "Gafgarion" : "x17",
+        "Agrias" : "x34"
+    }
+}

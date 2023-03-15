@@ -38,7 +38,7 @@ class Main:
         if folder:
             self.logger.info(f'Attempting to compile {folder}.')
         elif file:
-            self.logger.info(f"Attempting to compile {path.basename(file)}")
+            self.logger.info(f"Attempting to compile {path.basename(file)}.")
         start = timer()
         compiler = Compiler(self, isBattle, upgrade, folder, file)
         compiler.compile()
@@ -47,21 +47,25 @@ class Main:
 
         self.logger.info(f'It took {end-start} seconds to complile.')
         if isBattle:
+            if len(compiler.final_string) > 8636:
+                self.logger.error(f"Used Space is over the limit of 8636! It is not recommended to patch!")
             self.logger.info(f"Used Space {int(len(compiler.final_string)/2)} / 8636")
         else:
+            if len(compiler.final_string) > 3546:
+                self.logger.error(f"Used Space is over the limit of 3546! It is not recommended to patch!")
             self.logger.info(f"Used Space {int(len(compiler.final_string)/2)} / 3546")
 
     def check_valid_value(self, number) -> int:
-
         if 'x' in number:
             split_number = number.split('x')
             try: return int(f"0x{split_number[1]}", 16)  
             except: return None
 
-        elif number.isdecimal(): return int(number)
-        elif number in self.labels:
-            return self.check_valid_value(self.labels.get(number))
-        else: return None
+        if number.isdecimal(): return int(number)
+        for category in self.labels.values():
+            if number in category:
+                return self.check_valid_value(category.get(number))
+        return None
 
     def to_halfword(self, number, flip = False):
         try:
