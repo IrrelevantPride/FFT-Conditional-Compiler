@@ -1,22 +1,31 @@
-from os import listdir
+from os import listdir, path
 from classes.conditional import Conditional
 from typing import List
 
 class Compiler:
-    def __init__(self, main, conditionals_directory, isBattle, upgrade):
+    def __init__(self, main, isBattle, upgrade, folder, file):
 
         self.main = main
         self.isBattle = isBattle
-        self.conditionals_directory = conditionals_directory
+        self.conditionals_directory = folder
         self.upgrade = upgrade
 
         if self.isBattle: self.conditional_instructions = self.main.event_instructions["event_instructions"]
         else: self.conditional_instructions = self.main.world_instructions["world_instructions"]
-        self.dir_files = listdir(self.conditionals_directory)
-        self.txt_files = [file for file in self.dir_files if file[-4:] == ".txt"]
+
+        self.txt_files = None
+
+        if folder:
+            self.isFolder = True
+            dir_files = listdir(self.conditionals_directory)
+            self.txt_files = [file for file in dir_files if file[-4:] == ".txt"]
         
+        elif file:
+            self.isFolder = False
+            self.txt_files = [file]
+
+        self.current_scenario = None
         self.final_string = None
-        self.current_file = None
         self.scenarios : List = []
         self.highest_id: int = -1
         self.num_of_entries: int = 0
@@ -27,18 +36,21 @@ class Compiler:
     def compile(self) -> bool:
         self.current_scenario = None
         for file in self.txt_files:
-            with open (f"{self.conditionals_directory}"
-                       f"{file}", 'r') as file:
-                self.current_file = file.readlines()
+            if self.isFolder:
+                with open (path.join(self.conditionals_directory, file), 'r') as f:
+                    current_file = f.readlines()
+            else:
+                with open (file, 'r') as f:
+                    current_file = f.readlines()
 
-            for line in self.current_file:
-                nws = line.strip()
+            for index, line in enumerate(current_file):
+                nws = line.strip('\n ')
                 nws = self.check_line_for_comment(nws)
                 if self.check_line_for_id(nws): continue
                 if self.current_scenario == None: continue
                 if self.check_line_for_entry(nws): continue
                 if self.check_line_for_instruction(nws): continue
-                self.main.logger.warning(f"The line containing '{line}' will not be compiled")
+                if nws: self.main.logger.warning(f"Line {index} in {file} will not be compiled.")
         self.current_scenario.update_total_conditionals()
         self.add_scenario(self.current_scenario)
         self.scenarios.sort(key=lambda x: x.conditionalid)

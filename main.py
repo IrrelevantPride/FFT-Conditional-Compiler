@@ -34,13 +34,16 @@ class Main:
         self.menubar = MenuBar(self)
         self.window.mainloop()
 
-    def compile(self, file, conditionals_directory, isBattle, upgrade):
-        self.logger.info(f'Attempting to compile {conditionals_directory}.')
+    def compile(self, savefilename, folder, file, upgrade, isBattle):
+        if folder:
+            self.logger.info(f'Attempting to compile {folder}.')
+        elif file:
+            self.logger.info(f"Attempting to compile {path.basename(file)}")
         start = timer()
-        compiler = Compiler(self, conditionals_directory, isBattle, upgrade)
+        compiler = Compiler(self, isBattle, upgrade, folder, file)
         compiler.compile()
         end = timer()
-        self.create_xml(compiler.final_string, file, isBattle)
+        self.create_xml(compiler.final_string, savefilename, isBattle)
 
         self.logger.info(f'It took {end-start} seconds to complile.')
         if isBattle:
@@ -50,13 +53,10 @@ class Main:
 
     def check_valid_value(self, number) -> int:
 
-        if number[0:1] == 'x':
-            try: return int(f'0{number}', 16)
-            except ValueError: return None
-
-        elif number[0:2] == "0x": 
-            try: return int(number, 16)
-            except ValueError: return None        
+        if 'x' in number:
+            split_number = number.split('x')
+            try: return int(f"0x{split_number[1]}", 16)  
+            except: return None
 
         elif number.isdecimal(): return int(number)
         elif number in self.labels:
@@ -100,8 +100,7 @@ class Main:
             offset = "30234"
 
         patches_tree = Element("Patches")
-        patch_tree = SubElement(patches_tree, "Patch", 
-                name=name)
+        patch_tree = SubElement(patches_tree, "Patch", name=name)
         
         SubElement(
                     patch_tree,
