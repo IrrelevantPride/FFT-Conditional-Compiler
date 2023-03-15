@@ -1,0 +1,217 @@
+{
+    "event_instructions": [
+        {
+            "id" : "00",
+            "alias" : ["Empty", "Blank"],
+            "size" : 0
+        },
+        {
+            "id": "01",
+            "alias": ["IsVariableEqualToValue", "Var="],
+            "size": 2
+        },
+        {
+            "id": "02",
+            "alias": ["IsVariableGreaterThanOrEqualToValue", "Var>="],
+            "size": 2
+        },
+        {
+            "id": "03",
+            "alias": ["IsVariableLessThanOrEqualToValue", "Var<="],
+            "size": 2
+        },
+        {
+            "id": "04",
+            "alias": ["IsUnitPresent", "Present"],
+            "size": 1
+        },
+        {
+            "id": "05",
+            "alias": ["IsUnitHPGreaterThanOrEqualToValue", "UnitHP>="],
+            "size": 2
+        },
+        {
+            "id": "06",
+            "alias": ["IsUnitHPLessThanOrEqualToValue", "UnitHP<="],
+            "size": 2
+        },
+        {
+            "id": "07",
+            "alias": ["IsUnitHPGreaterThanOrEqualToPercent", "UnitHP%>="],
+            "size": 2
+        },
+        {
+            "id": "08",
+            "alias": ["IsUnitHPLessThanOrEqualToPercent", "UnitHP%<="],
+            "size": 2
+        },
+        {
+            "id": "09",
+            "alias": ["IsUnitMPGreaterThanOrEqualToValue", "UnitMP>="],
+            "size": 2
+        },
+        {
+            "id": "0A",
+            "alias": ["IsUnitMPLessThanOrEqualToValue", "UnitMP<="],
+            "size": 2
+        },
+        {
+            "id": "0B",
+            "alias": ["IsUnitActiveTurn", "ActiveTurn"],
+            "size": 1
+        },
+        {
+            "id": "0C",
+            "size": 1
+        },
+        {
+            "id": "0D",
+            "alias": ["IsRamzaEquippedWithItem", "MCEquip", "MainCharacterEquip"],
+            "size": 1
+        },
+        {
+            "id": "0E",
+            "alias": ["AreWarFundsGreaterThanOrEqualToValue", "Gil>="],
+            "size": 2
+        },
+        {
+            "id": "0F",
+            "alias": ["AreWarFundsLessThanOrEqualToValue", "Gil<="],
+            "size": 2
+        },
+        {
+            "id": "10",
+            "alias": ["IsDateGreaterThanOrEqual", "Date>="],
+            "size": 3
+        },
+        {
+            "id": "11",
+            "alias": ["IsDateLessThanOrEqual", "Date<="],
+            "size": 3
+        },
+        {
+            "id": "12",
+            "alias": ["AreCasualtiesGreaterThanOrEqualToValue", "Casualties>="],
+            "size": 2
+        },
+        {
+            "id": "13",
+            "alias": ["AreCasualtiesLessThanOrEqualToValue", "Casualties<="],
+            "size": 2
+        },
+        {
+            "id": "14",
+            "alias": ["", "HasStatus"],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 2
+        },
+        {
+            "id": "15",
+            "alias": ["", "MissingStatus"],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 2
+        },
+        {
+            "id": "16",
+            "alias": ["AreAllEnemiesDefeated", "Victory"],
+            "size": 0
+        },
+        {
+            "id": "17",
+            "alias": ["AreAllAlliedUnitsDead", "Defeat"],
+            "size": 3,
+            "requires upgrade": true,
+            "upgrade size": 0
+        },
+        {
+            "id": "18",
+            "alias": ["IsUnitAtLocation", "UnitOnTile"],
+            "size": 4
+        },
+        {
+            "id": "19",
+            "alias": ["LoadEvent", "RunScenario"],
+            "size": 1
+        },
+        {
+            "id": "1A",
+            "size": 8
+        },
+        {
+            "id": "1B",
+            "size": 1
+        },
+        {
+            "id": "1C",
+            "alias": ["", "SetVar"],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 2
+        },
+        {
+            "id": "1D",
+            "size": 0
+        },
+        {
+            "id": "1E",
+            "size": 0
+        },
+        {
+            "id": "1F",
+            "size": 0
+        },
+        {
+            "id": "20",
+            "size": 0
+        },
+        {
+            "id": "21",
+            "alias": ["", "UnitsInRangeGreaterThanOrEqualTo", "UnitsInRange>="],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 7
+        },
+        {
+            "id": "22",
+            "alias": ["", "UnitsInRangeLessThanOrEqualTo", "UnitsInRange<="],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 7
+        },
+        {
+            "id": "23",
+            "alias": ["", "UnitDistanceGreaterThanOrEqualTo", "UnitDistance>="],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 3
+        },
+        {
+            "id": "24",
+            "alias": ["", "UnitDistanceLessThanOrEqualTo", "UnitDistance<="],
+            "size": 0,
+            "requires upgrade": true,
+            "upgrade size": 3
+        },
+        {
+            "id": "25",
+            "alias": ["IsAnyTeamUnitAtLocation", "AllyOnTile"],
+            "size": 4
+        },
+        {
+            "id": "26",
+            "alias": ["", "TurnCountGreaterThanOrEqualTo", "TurnCount>="],
+            "size": 4,
+            "requires upgrade": true,
+            "upgrade size": 2
+        },
+        {
+            "id": "27",
+            "alias": ["", "TurnCountGreaterThanOrEqualTo", "TurnCount<="],
+            "size": 4,
+            "requires upgrade": true,
+            "upgrade size": 2
+        }
+    ]
+}

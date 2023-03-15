@@ -1,0 +1,209 @@
+{
+    "world_instructions": [
+        {
+            "id" : "00",
+            "alias" : ["Empty", "Blank"],
+            "size" : 0
+        },
+        {
+            "id": "01",
+            "alias": ["Var=", "IsVariableEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "02",
+            "alias": ["Var>=", "IsVariableGreaterThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "03",
+            "alias": ["Var<=", "IsVariableLessThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "04",
+            "alias": ["HasUnit", "IsUnitPresent"],
+            "size": 1
+        },
+        {
+            "id": "05",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "06",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "07",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "08",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "09",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "0A",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "0B",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "0C",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "0D",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "0E",
+            "alias": ["Gil>=", "AreWarFundsGreaterThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "0F",
+            "alias": ["Gil<=", "AreWarFundsLessThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "10",
+            "alias": ["Date>=", "IsDateGreaterThanOrEqual"],
+            "size": 3
+        },
+        {
+            "id": "11",
+            "alias": ["Date<=", "IsDateLessThanOrEqual"],
+            "size": 3
+        },
+        {
+            "id": "12",
+            "alias": ["Casualties>=", "AreCasualtiesGreaterThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "13",
+            "alias": ["Casualties<=", "AreCasualtiesLessThanOrEqualToValue"],
+            "size": 2
+        },
+        {
+            "id": "14",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "15",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "16",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "17",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "18",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "19",
+            "alias": "LoadEvent",
+            "size": 2
+        },
+        {
+            "id": "1A",
+            "alias": "Choice",
+            "size": 8
+        },
+        {
+            "id": "1B",
+            "alias": "",
+            "size": 0
+        },
+        {
+            "id": "1C",
+            "alias": "SetVar",
+            "size": 2
+        },
+        {
+            "id": "1D",
+            "alias": "Text",
+            "size": 1
+        },
+        {
+            "id": "1E",
+            "alias": "DDEntry",
+            "size": 3
+        },
+        {
+            "id": "1F",
+            "alias": "SetVar2",
+            "size": 2
+        },
+        {
+            "id": "20",
+            "alias": "DrawPath",
+            "size": 2
+        },
+        {
+            "id": "21",
+            "alias": "ErasePath",
+            "size": 2
+        },
+        {
+            "id": "22",
+            "alias": "DrawLocation",
+            "size": 1
+        },
+        {
+            "id": "23",
+            "alias": "EraseLocation",
+            "size": 1
+        },
+        {
+            "id": "24",
+            "alias": "FocusLocation",
+            "size": 1
+        },
+        {
+            "id": "25",
+            "alias": ["MCBrave>=", "MCBraveGreaterThanOrEqualTo"],
+            "size": 1
+        },
+        {
+            "id": "26",
+            "alias": ["MCBrave<=", "MCBraveLessThanOrEqualTo"],
+            "size": 1
+        },
+        {
+            "id": "27",
+            "alias": ["MCFaith>=", "MCFaithGreaterThanOrEqualTo"],
+            "size": 1
+        },
+        {
+            "id": "28",
+            "alias": ["MCFaith<=", "MCFaithLessThanOrEqualTo"],
+            "size": 1
+        }
+    ]
+}

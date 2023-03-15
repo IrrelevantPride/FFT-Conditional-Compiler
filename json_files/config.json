@@ -1,0 +1,5 @@
+{
+    "labels_file_name" : "labels.json",
+    "max_scenario_sets": 255,
+    "max_amount_of_entries": 16
+}
