@@ -33,35 +33,36 @@ class Main:
 
         self.menubar = MenuBar(self)
         self.window.mainloop()
-
-    def compile(self, savefilename, folder, file, upgrade, isBattle):
+    
+    def compile(self, savefilename, folder, file, isBattle, upgrade, willConsolidate):
         if folder:
             self.logger.info(f'Attempting to compile {folder}.')
         elif file:
             self.logger.info(f"Attempting to compile {path.basename(file)}.")
         start = timer()
-        compiler = Compiler(self, isBattle, upgrade, folder, file)
-        compiler.compile()
+        self.compiler = Compiler(self, isBattle, upgrade, willConsolidate, folder, file)
+        self.compiler.compile()
         end = timer()
-        self.create_xml(compiler.final_string, savefilename, isBattle)
+        self.create_xml(self.compiler.final_string, savefilename, isBattle, willConsolidate)
 
         self.logger.info(f'It took {end-start} seconds to complile.')
         if isBattle:
-            if len(compiler.final_string) > 8636:
+            if len(self.compiler.final_string) > 8636:
                 self.logger.error(f"Used Space is over the limit of 8636! It is not recommended to patch!")
-            self.logger.info(f"Used Space {int(len(compiler.final_string)/2)} / 8636")
+            self.logger.info(f"Used Space {int(len(self.compiler.final_string)/2)} / 8636")
         else:
-            if len(compiler.final_string) > 3546:
+            if len(self.compiler.final_string) > 3546:
                 self.logger.error(f"Used Space is over the limit of 3546! It is not recommended to patch!")
-            self.logger.info(f"Used Space {int(len(compiler.final_string)/2)} / 3546")
+            self.logger.info(f"Used Space {int(len(self.compiler.final_string)/2)} / 3546")
 
     def check_valid_value(self, number) -> int:
+        if isinstance(number, int): return number
+        if number.isdecimal(): return int(number)
         if 'x' in number:
             split_number = number.split('x')
             try: return int(f"0x{split_number[1]}", 16)  
             except: return None
 
-        if number.isdecimal(): return int(number)
         for category in self.labels.values():
             if number in category:
                 return self.check_valid_value(category.get(number))
@@ -92,30 +93,48 @@ class Main:
                 
         return json_dict
 
-    def create_xml(self, text, file_name, isBattle):
+    def create_xml(self, text, saveFileName, isBattle, consolidate):
+        patches = Element("Patches")
         if isBattle:
-            name = "Event Conditoinals"
-            location_file = "EVENT_ATTACK_OUT"
+            name = "Event Conditionals"
+            file = "EVENT_ATTACK_OUT"
             offset = "14938"
-
+        
         else:
             name = "World Conditionals"
-            location_file = "WORLD_WLDCORE_BIN"
+            file = "WORLD_WLDCORE_BIN"
             offset = "30234"
-
-        patches_tree = Element("Patches")
-        patch_tree = SubElement(patches_tree, "Patch", name=name)
         
-        SubElement(
-                    patch_tree,
-                    "Location",
-                    file = location_file,
-                    offset = offset,
-                    mode="DATA").text = text
-        xml = ElementTree(patches_tree)
-        indent(xml, space='\t', level = 0)
-        try: xml.write(file_name, encoding="utf-8", xml_declaration=True)
-        except: self.logger.exception(f"The file, {file_name}, was not created!")
+        patch = SubElement(patches, "Patch", name = name)
+        if not consolidate:
+            datatext = text
+            self.create_location_tag(patch, file = file, offset = offset, text = datatext)
+
+        elif isBattle and consolidate:
+            pointers = "".join(self.compiler.scenario_pointers) + "".join(self.compiler.entry_pointers)
+            self.create_location_tag(patch, file = file, offset = offset, text = pointers)
+            sector = "14B08"
+            offset = "0"
+            datatext = "".join(self.compiler.entries)
+            self.create_location_tag(patch, sector = sector, offset = offset, text = datatext)
+
+        elif not isBattle and consolidate:
+            pointers = self.compiler.scenario_pointers + self.compiler.entry_pointers
+
+        tree = ElementTree(patches)
+        indent(tree, space='    ', level = 0)
+        try: tree.write(saveFileName, encoding="utf-8", xml_declaration=True)
+        except: self.logger.exception(f"The file, {saveFileName}, was not created!")
+        
+    def create_location_tag(self, parent, file = None, sector = None, offset = None, offsetMode = None, mode = "DATA", text = None):
+        locationTag = SubElement(parent, "Location")
+        if file is not None: locationTag.attrib["file"] = file
+        if sector is not None: locationTag.attrib["sector"] = sector
+        if offset is not None: locationTag.attrib["offset"] = offset
+        if offsetMode is not None: locationTag.attrib["offsetMode"] = offsetMode
+        if mode is not None: locationTag.attrib["mode"] = mode
+        if text is not None: locationTag.text = text
+
 
 if __name__ == "__main__":
     main = Main()

@@ -3,12 +3,13 @@ from classes.conditional import Conditional
 from typing import List
 
 class Compiler:
-    def __init__(self, main, isBattle, upgrade, folder, file):
+    def __init__(self, main, isBattle, upgrade, willConsolidate, folder, file):
 
         self.main = main
         self.isBattle = isBattle
         self.conditionals_directory = folder
         self.upgrade = upgrade
+        self.willConsolidate = willConsolidate
 
         if self.isBattle: self.conditional_instructions = self.main.event_instructions["event_instructions"]
         else: self.conditional_instructions = self.main.world_instructions["world_instructions"]
@@ -125,24 +126,22 @@ class Compiler:
         # Each scenario has a pointer to the specific entry, the entry pointers end with the string '0000'.
         # To account for each '0000' the entries start adds the total number of entries + the number of conditionals
         entries_start = entry_pointer_start + ((self.num_of_entries + len(self.scenarios)) * 2)
-        entries_position = entries_start
-        scenario_pointers = []
-        entry_pointers = []
-        entries = []
+        self.scenario_pointers = []
+        self.entry_pointers = []
+        self.entries = []
+        if self.willConsolidate:
+            entries_position = 2
+            self.entries.append('0000')
+        else: entries_position = entries_start
 
         for conditional in self.scenarios:
-            scenario_pointers.append(self.main.to_halfword(entry_pointer_position, True))
+            self.scenario_pointers.append(self.main.to_halfword(entry_pointer_position, True))
             entry_pointer_position += ((conditional.entry_amount + 1) * 2)
             for conditional_set in conditional.total_conditionals:
                 if conditional_set:
-                    entry_pointers.append(self.main.to_halfword(entries_position, True))
+                    self.entry_pointers.append(self.main.to_halfword(entries_position, True))
                 size = int(len(conditional_set) / 2)
                 entries_position += size
-                entries.append(conditional_set)
-            entry_pointers.append("0000")
-
-        list_all = []
-        list_all.append("".join(scenario_pointers))
-        list_all.append("".join(entry_pointers))
-        list_all.append("".join(entries))
-        self.final_string = "".join(list_all)
+                self.entries.append(conditional_set)
+            self.entry_pointers.append("0000")
+        self.final_string = "".join(self.scenario_pointers) + "".join(self.entry_pointers) + "".join(self.entries)
