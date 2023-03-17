@@ -5,6 +5,8 @@ from tkinter import Tk
 from timeit import default_timer as timer
 from json import load
 from os import path
+from pathlib import Path
+from shutil import copy
 from classes.menubar import MenuBar
 from classes.compiler import Compiler
 
@@ -99,24 +101,33 @@ class Main:
             name = "Event Conditionals"
             file = "EVENT_ATTACK_OUT"
             offset = "14938"
-        
+            consolidateName = "Load Event Conditionals Rewrite"
+            consolidateFile = "EVENT_ATTACK_OUT"
+            consolidateOffset = "1c38f4"
+
         else:
             name = "World Conditionals"
             file = "WORLD_WLDCORE_BIN"
             offset = "30234"
+            consolidateName = "Process World Conditionals Rewrite"
+            consolidateFile = "WORLD_WORLD_BIN"
+            consolidateOffset = "13D590"
         
-        patch = SubElement(patches, "Patch", name = name)
+        conditionalPatch = SubElement(patches, "Patch", name = name)
         if not consolidate:
             datatext = text
-            self.create_location_tag(patch, file = file, offset = offset, text = datatext)
+            self.create_location_tag(conditionalPatch, file = file, offset = offset, text = datatext)
 
         elif isBattle and consolidate:
             pointers = "".join(self.compiler.scenario_pointers) + "".join(self.compiler.entry_pointers)
-            self.create_location_tag(patch, file = file, offset = offset, text = pointers)
+            self.create_location_tag(conditionalPatch, file = file, offset = offset, text = pointers)
             sector = "14B08"
             offset = "0"
             datatext = "".join(self.compiler.entries)
-            self.create_location_tag(patch, sector = sector, offset = offset, text = datatext)
+            self.create_location_tag(conditionalPatch, sector = sector, offset = offset, text = datatext)
+            asmPatch = SubElement(patches, "Patch", name = consolidateName)
+            asmFile = f"\n{Path(path.join('asm', 'Load Event Conditionals Rewrite.asm')).read_text()}"
+            self.create_location_tag(asmPatch, file = consolidateFile, offset = consolidateOffset, offsetMode = "RAM", mode="ASM", text = asmFile)
 
         elif not isBattle and consolidate:
             pointers = self.compiler.scenario_pointers + self.compiler.entry_pointers
