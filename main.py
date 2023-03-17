@@ -2,6 +2,7 @@ import logging
 
 from xml.etree.ElementTree import ElementTree, Element, SubElement, indent
 from tkinter import Tk
+from tkinter import messagebox
 from timeit import default_timer as timer
 from json import load
 from os import path
@@ -45,7 +46,11 @@ class Main:
         self.compiler = Compiler(self, isBattle, upgrade, willConsolidate, folder, file)
         self.compiler.compile()
         end = timer()
-        self.create_xml(self.compiler.final_string, savefilename, isBattle, willConsolidate)
+        success = self.create_xml(self.compiler.final_string, savefilename, isBattle, willConsolidate)
+        if success:
+            messagebox.showinfo("Result", "         Compiled XML file successful.\nPlease check the info.log for more information.")
+        else:
+            messagebox.showinfo("Result", "        Compiled XML file failed.\nPlease check the info.log for more information.")
 
         self.logger.info(f'It took {end-start} seconds to complile.')
         if isBattle:
@@ -95,7 +100,7 @@ class Main:
                 
         return json_dict
 
-    def create_xml(self, text, saveFileName, isBattle, consolidate):
+    def create_xml(self, text, saveFileName, isBattle, consolidate) -> bool:
         patches = Element("Patches")
         if isBattle:
             name = "Event Conditionals"
@@ -134,9 +139,13 @@ class Main:
 
         tree = ElementTree(patches)
         indent(tree, space='    ', level = 0)
-        try: tree.write(saveFileName, encoding="utf-8", xml_declaration=True)
-        except: self.logger.exception(f"The file, {saveFileName}, was not created!")
-        
+        try: 
+            tree.write(saveFileName, encoding="utf-8", xml_declaration=True)
+            return True
+        except:
+            self.logger.exception(f"The file, {saveFileName}, was not created!")
+            return False
+
     def create_location_tag(self, parent, file = None, sector = None, offset = None, offsetMode = None, mode = "DATA", text = None):
         locationTag = SubElement(parent, "Location")
         if file is not None: locationTag.attrib["file"] = file
