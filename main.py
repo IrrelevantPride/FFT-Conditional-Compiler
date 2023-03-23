@@ -1,5 +1,6 @@
 import logging
 
+from argparse import ArgumentParser
 from xml.etree.ElementTree import ElementTree, Element, SubElement, indent
 from tkinter import Tk
 from tkinter import messagebox
@@ -7,7 +8,6 @@ from timeit import default_timer as timer
 from json import load
 from os import path
 from pathlib import Path
-from shutil import copy
 from classes.menubar import MenuBar
 from classes.compiler import Compiler
 
@@ -36,8 +36,8 @@ class Main:
 
         self.menubar = MenuBar(self)
         self.window.mainloop()
-    
-    def compile(self, savefilename, folder, file, isBattle, upgrade, willConsolidate):
+
+    def compile(self, *, savefilename, folder, file, isBattle, upgrade, willConsolidate):
         if folder:
             self.logger.info(f'Attempting to compile {folder}.')
         elif file:
@@ -47,7 +47,9 @@ class Main:
         self.compiler.compile()
         end = timer()
         success = self.create_xml(self.compiler.final_string, savefilename, isBattle, willConsolidate)
-        if success:
+
+        if self.args.event or self.args.world: pass
+        elif success:
             messagebox.showinfo("Result", "         Compiled XML file successful.\nPlease check the info.log for more information.")
         else:
             messagebox.showinfo("Result", "        Compiled XML file failed.\nPlease check the info.log for more information.")
@@ -86,7 +88,6 @@ class Main:
             tohex = f"{number:04x}"
             if flip: return f"{tohex[2:]}{tohex[:2]}"
             else: return tohex
-
         except TypeError:  return None
 
     def load_json(self, file_name):
@@ -94,10 +95,9 @@ class Main:
         try:
             with open(file_name) as json_file:
                 json_dict = load(json_file)
-            
+
         except FileNotFoundError:
                 self.logger.exception(f"The file, {file_name} was not found!")
-                
         return json_dict
 
     def create_xml(self, text, saveFileName, isBattle, consolidate) -> bool:
@@ -155,7 +155,38 @@ class Main:
         if mode is not None: locationTag.attrib["mode"] = mode
         if text is not None: locationTag.text = text
 
+    def launch(self):
+        parser = ArgumentParser()
+        parser.add_argument(
+                "-e", "--event",
+                help = "Compile Event Conditionals with the data in config.json",
+                action = "store_true"
+        )
+        parser.add_argument(
+                "-w", "--world",
+                help = "Compile World Conditionals with the data in config.json",
+                action = "store_true"
+        )
+        self.args = parser.parse_args()
+        if self.args.event:
+            xmlname = self.config.get("event_conditionals_xml_name")
+            folder = self.config.get("event_conditionals_folder")
+            file = self.config.get("event_conditionals_file")
+            upgrade = self.config.get("use_expanded_conditionals")
+            willConsolidate = self.config.get("minimize_attack_out_usage")
+            self.compile(
+                    savefilename = xmlname,
+                    folder = folder,
+                    file = file,
+                    isBattle = True,
+                    upgrade = upgrade,
+                    willConsolidate = willConsolidate)
+
+        elif self.args.world:
+            pass
+
+        else:
+          self.start_gui()  
 
 if __name__ == "__main__":
-    main = Main()
-    main.start_gui()
+    Main().launch()

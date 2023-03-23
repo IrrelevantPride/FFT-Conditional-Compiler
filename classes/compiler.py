@@ -25,6 +25,9 @@ class Compiler:
             self.isFolder = False
             self.txt_files = [file]
 
+        else:
+            self.main.logger.warning(f"No file or folder is selected! Cannot compile!")
+
         self.current_scenario = None
         self.final_string = None
         self.scenarios : List = []

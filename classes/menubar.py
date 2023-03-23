@@ -18,8 +18,8 @@ class MenuBar:
         self.create_worldmenu()
         self.create_settingsmenu()
         self.main.window.config(menu = self.menubar)
-        self.main.window.bind('b', lambda event: self.compile_scenarios(isBattle = True, isFolder = False, consolidate = self.battleConsolidate))
-        self.main.window.bind('w', lambda event: self.compile_scenarios(isBattle = False, isFolder = False, consolidate = self.worldConsolidate))
+        self.main.window.bind('b', lambda event: self.compile_scenarios(isBattle = True, isFolder = False, consolidate = self.battleConsolidate.get()))
+        self.main.window.bind('w', lambda event: self.compile_scenarios(isBattle = False, isFolder = False, consolidate = self.worldConsolidate.get()))
         self.main.window.bind('<Escape>', lambda event: self.exit())
 
     def create_filemenu(self):
@@ -29,19 +29,19 @@ class MenuBar:
     def create_battlemenu(self):
         self.battlemenu.add_command(
                 label = "Compile Event Conditionals File",
-                command = lambda: self.compile_scenarios(isBattle = True, isFolder = False, consolidate = self.battleConsolidate))
+                command = lambda: self.compile_scenarios(isBattle = True, isFolder = False, consolidate = self.battleConsolidate.get()))
         self.battlemenu.add_command(
                 label = "Compile Event Conditionals Folder",
-                command = lambda: self.compile_scenarios(isBattle = True, isFolder = True, consolidate = self.battleConsolidate))
+                command = lambda: self.compile_scenarios(isBattle = True, isFolder = True, consolidate = self.battleConsolidate.get()))
         self.menubar.add_cascade(label = "Event Conditionals", menu = self.battlemenu)
 
     def create_worldmenu(self):
         self.worldmenu.add_command(
                 label = "Compile World Conditionals File",
-                command = lambda: self.compile_scenarios(isBattle = False, isFolder = False, consolidate = self.worldConsolidate))
+                command = lambda: self.compile_scenarios(isBattle = False, isFolder = False, consolidate = self.worldConsolidate.get()))
         self.worldmenu.add_command(
                 label = "Compile World Conditionals Folder",
-                command = lambda: self.compile_scenarios(isBattle = False, isFolder = True, consolidate = self.worldConsolidate))
+                command = lambda: self.compile_scenarios(isBattle = False, isFolder = True, consolidate = self.worldConsolidate.get()))
         self.menubar.add_cascade(label = "World Conditionals", menu = self.worldmenu)
 
     def compile_scenarios(self, isBattle, isFolder, consolidate):
@@ -62,13 +62,22 @@ class MenuBar:
                                     filetypes=(("XML files", "*.xml*"),
                                                ("All Files", "*.*") ))
         if not file_name: return
-        self.main.compile(file_name, compile_folder, compile_file, isBattle, self.upgrade, consolidate)
+        self.main.compile(
+                savefilename = file_name,
+                folder = compile_folder,
+                file = compile_file,
+                isBattle = isBattle,
+                upgrade = self.upgrade.get(),
+                willConsolidate = consolidate)
 
     def create_settingsmenu(self):
         self.settingsmenu.add_checkbutton(label = "Use Expanded Conditional Instructions", onvalue = 1, offvalue = 0, variable = self.upgrade)
         self.settingsmenu.add_checkbutton(label = "Consolidate ATTACK.OUT usage", onvalue = 1, offvalue = 0, variable = self.battleConsolidate)
         self.settingsmenu.add_checkbutton(label = "Expand World Conditionals to WORLD.BIN", onvalue = 1, offvalue = 0, variable = self.worldConsolidate)
         self.menubar.add_cascade(label = "Config", menu = self.settingsmenu)
+        if self.main.config.get("use_expanded_conditionals"): self.upgrade.set(1)
+        if self.main.config.get("minimize_attack_out_usage"): self.battleConsolidate.set(1)
+        if self.main.config.get("expand_world_conditionals_to_world_bin"): self.worldConsolidate.set(1)
 
     def exit(self):
         self.main.window.destroy()

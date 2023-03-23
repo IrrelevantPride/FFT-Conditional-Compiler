@@ -3,3 +3,7 @@ dist/
 *.exe
 info.log
 *.pyc
+*.xml
+worldconditionals.txt
+eventconditionals.txt
+json_files/debug_config.json
